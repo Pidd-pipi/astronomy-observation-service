@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func ConfigDefaultsPort(t *testing.T) {
+func TestConfigDefaultsPort(t *testing.T) {
 	t.Setenv("PORT", "")
 	cfg := loadConfig()
 	if cfg.Port != "8080" {
@@ -18,7 +18,7 @@ func TestLoadConfigHonorsPort(t *testing.T) {
 	}
 }
 
-func RunStatusEmptyRejected(t *testing.T) {
+func TestRunStatusEmptyDenied(t *testing.T) {
 	if err := validateRunStatus(""); err == nil {
 		t.Fatalf("empty status must be rejected")
 	}

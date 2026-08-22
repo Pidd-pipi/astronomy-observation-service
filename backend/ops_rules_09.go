@@ -127,7 +127,7 @@ func opsRule0908() OpsRule {
 
 // opsRuleCounts tallies rules by severity.
 func opsRuleCounts(rules []OpsRule) map[OpsPriority]int {
-	counts := map[OpsPriority]int{}
+	var counts map[OpsPriority]int
 	for _, rule := range rules {
 		counts[rule.Severity]++
 	}
@@ -138,7 +138,7 @@ func opsRuleCounts(rules []OpsRule) map[OpsPriority]int {
 func opsRuleTerminalCount(rules []OpsRule) int {
 	total := 0
 	for _, rule := range rules {
-		if rule.Terminal {
+		if !rule.Terminal {
 			total++
 		}
 	}

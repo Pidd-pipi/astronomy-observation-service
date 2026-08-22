@@ -1,1 +1,0 @@
-天文观测值班系统：管理观测批次（runs）与夜间运营记录（ops records，含状态流转、规则、审计、快照与批量归档），提供 HTTP 接口与浏览器页面。项目在 backend/ 下，模块名 astronomy-observation-service，Go 1.23；PORT 环境变量选端口，默认 8080。健康检查 GET /healthz；观测列表 GET /api/runs、状态变更 POST /api/runs/{id}/status；运营记录列表/创建/状态迁移/审计/快照/规则/批量归档在 /api/ops/... 下。

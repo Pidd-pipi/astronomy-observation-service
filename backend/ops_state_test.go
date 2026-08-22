@@ -2,14 +2,14 @@ package main
 
 import "testing"
 
-func StatePausedResumes(t *testing.T) {
+func TestStatePausedResumes(t *testing.T) {
 	m := newOpsStateMachine()
 	if !m.CanMove(OpsStatusPaused, OpsStatusActive) {
 		t.Fatalf("paused must be able to resume to active")
 	}
 }
 
-func StateNoopNoHistory(t *testing.T) {
+func TestStateNoopLeavesEmpty(t *testing.T) {
 	m := newOpsStateMachine()
 	if err := m.Move(OpsStatusActive, OpsStatusActive, "noop"); err != nil {
 		t.Fatal(err)
@@ -19,7 +19,7 @@ func StateNoopNoHistory(t *testing.T) {
 	}
 }
 
-func StatePausedIsValid(t *testing.T) {
+func TestStatePausedIsValid(t *testing.T) {
 	if !opsStatusValid(OpsStatusPaused) {
 		t.Fatalf("paused must be a valid status")
 	}
@@ -32,14 +32,14 @@ func TestStateRejectsIllegalMove(t *testing.T) {
 	}
 }
 
-func StateSameMoveAllowed(t *testing.T) {
+func TestStateSameMoveAllowed(t *testing.T) {
 	m := newOpsStateMachine()
 	if !m.CanMove(OpsStatusActive, OpsStatusActive) {
 		t.Fatalf("same-status move must be allowed")
 	}
 }
 
-func StateLastEmptySafe(t *testing.T) {
+func TestStateLastEmptySafe(t *testing.T) {
 	m := newOpsStateMachine()
 	if _, ok := m.Last(); ok {
 		t.Fatalf("empty machine must not report a last transition")

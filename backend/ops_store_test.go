@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func StoreGetIsolatedCopy(t *testing.T) {
+func TestStoreGetIsolatedCopy(t *testing.T) {
 	store := newOpsStore([]OpsRecord{
 		{ID: "op-1", Subject: "session", Owner: "o", Status: OpsStatusQueued, Priority: OpsPriorityNormal, Labels: map[string]string{"site": "north-dome"}},
 	})
@@ -23,7 +23,7 @@ func StoreGetIsolatedCopy(t *testing.T) {
 	}
 }
 
-func StoreListIsolatedCopies(t *testing.T) {
+func TestStoreListIsolatedCopies(t *testing.T) {
 	store := newOpsStore([]OpsRecord{
 		{ID: "op-1", Subject: "session", Owner: "o", Status: OpsStatusQueued, Priority: OpsPriorityNormal, Labels: map[string]string{"site": "north-dome"}},
 	})
@@ -41,7 +41,7 @@ func StoreListIsolatedCopies(t *testing.T) {
 	}
 }
 
-func StoreUpdateStoresCopy(t *testing.T) {
+func TestStoreUpdateStoresCopy(t *testing.T) {
 	store := newOpsStore([]OpsRecord{
 		{ID: "op-1", Subject: "session", Owner: "o", Status: OpsStatusQueued, Priority: OpsPriorityNormal, Revision: 1, Labels: map[string]string{"site": "north-dome"}},
 	})
@@ -57,7 +57,7 @@ func StoreUpdateStoresCopy(t *testing.T) {
 	}
 }
 
-func StorePutNormalizesId(t *testing.T) {
+func TestStorePutNormalizesId(t *testing.T) {
 	store := newOpsStore(nil)
 	item := OpsRecord{ID: "OP-X", Subject: "  session  ", Owner: " o ", Status: OpsStatusQueued, Priority: OpsPriorityNormal}
 	if err := store.Put(context.Background(), item); err != nil {
