@@ -12,7 +12,7 @@ func seedArchiverRecords() []OpsRecord {
 	}
 }
 
-func ArchiveNightKeepsError(t *testing.T) {
+func TestArchiveNightKeepsError(t *testing.T) {
 	svc := newOpsService(append(seedArchiverRecords(),
 		OpsRecord{ID: "blocked", Subject: "bad", Owner: "o", Status: OpsStatusQueued, Priority: OpsPriorityNormal, Revision: 1, Labels: map[string]string{"site": "s"}},
 	))
@@ -43,7 +43,7 @@ func TestArchiveNightClosesLog(t *testing.T) {
 	}
 }
 
-func ArchiveNightCommitsEmpty(t *testing.T) {
+func TestArchiveNightCommitsEmpty(t *testing.T) {
 	svc := newOpsService(seedArchiverRecords())
 	logs := newNightLogRegistry()
 	archiver := newNightArchiver(svc, logs)

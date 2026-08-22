@@ -8,7 +8,6 @@ import (
 var opsTransitionTable = map[OpsStatus]map[OpsStatus]bool{
 	OpsStatusQueued: {OpsStatusActive: true, OpsStatusClosed: true},
 	OpsStatusActive: {OpsStatusPaused: true, OpsStatusClosed: true},
-	OpsStatusPaused: {OpsStatusActive: true, OpsStatusClosed: true},
 	OpsStatusClosed: {},
 }
 
@@ -26,14 +25,11 @@ func newOpsStateMachine() *OpsStateMachine { return &OpsStateMachine{history: []
 func (m *OpsStateMachine) CanMove(from, to OpsStatus) bool {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	return from == to || opsTransitionTable[from][to]
+	return opsTransitionTable[from][to]
 }
 func (m *OpsStateMachine) Move(from, to OpsStatus, reason string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if from == to {
-		return nil
-	}
 	if !opsTransitionTable[from][to] {
 		return fmt.Errorf("%w: %s to %s", ErrOpsTransition, from, to)
 	}
@@ -48,13 +44,10 @@ func (m *OpsStateMachine) History() []OpsTransition {
 func (m *OpsStateMachine) Last() (OpsTransition, bool) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
-	if len(m.history) == 0 {
-		return OpsTransition{}, false
-	}
 	return m.history[len(m.history)-1], true
 }
 func (m *OpsStateMachine) Reset() { m.mu.Lock(); defer m.mu.Unlock(); m.history = m.history[:0] }
 func opsStatusValid(value OpsStatus) bool {
-	return value == OpsStatusQueued || value == OpsStatusActive || value == OpsStatusPaused || value == OpsStatusClosed
+	return value == OpsStatusQueued || value == OpsStatusActive || value == OpsStatusClosed
 }
 func opsStatusTerminal(value OpsStatus) bool { return value == OpsStatusClosed }

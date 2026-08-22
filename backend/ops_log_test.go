@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func LogAppendClosedRejected(t *testing.T) {
+func TestLogAppendClosedDenied(t *testing.T) {
 	log := newNightLog()
 	if err := log.Append("entry-1"); err != nil {
 		t.Fatal(err)
@@ -17,7 +17,7 @@ func LogAppendClosedRejected(t *testing.T) {
 	}
 }
 
-func LogCommitClosedRejected(t *testing.T) {
+func TestLogCommitClosedDenied(t *testing.T) {
 	log := newNightLog()
 	if err := log.Close(); err != nil {
 		t.Fatal(err)
@@ -30,7 +30,7 @@ func LogCommitClosedRejected(t *testing.T) {
 	}
 }
 
-func LogEntriesIsolated(t *testing.T) {
+func TestLogEntriesIsolated(t *testing.T) {
 	log := newNightLog()
 	if err := log.Append("entry-1"); err != nil {
 		t.Fatal(err)
