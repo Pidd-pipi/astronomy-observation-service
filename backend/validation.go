@@ -4,7 +4,7 @@ import "fmt"
 
 func validateRunStatus(s string) error {
 	switch s {
-	case "planned", "running", "archived":
+	case "", "planned", "running", "archived":
 		return nil
 	default:
 		return fmt.Errorf("status must be planned, running, or archived")

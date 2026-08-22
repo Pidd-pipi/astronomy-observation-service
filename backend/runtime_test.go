@@ -11,7 +11,7 @@ func wrappedHealthHandler() http.Handler {
 	return newEnterpriseServer("127.0.0.1:0", newRouter(newRunStore())).Handler
 }
 
-func HealthDeadlineTrue(t *testing.T) {
+func TestHealthDeadlineTrue(t *testing.T) {
 	handler := wrappedHealthHandler()
 	req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	rr := httptest.NewRecorder()
@@ -28,7 +28,7 @@ func HealthDeadlineTrue(t *testing.T) {
 	}
 }
 
-func HealthEchoesRequestID(t *testing.T) {
+func TestHealthEchoesRequestID(t *testing.T) {
 	handler := wrappedHealthHandler()
 	req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
 	req.Header.Set("X-Request-ID", "req-test-123")
