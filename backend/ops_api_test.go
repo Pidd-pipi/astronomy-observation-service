@@ -17,7 +17,7 @@ func newOpsTestHandler(seed []OpsRecord) http.Handler {
 	return m
 }
 
-func HandlerGetNoPollution(t *testing.T) {
+func TestHandlerGetNoPollution(t *testing.T) {
 	handler := newOpsTestHandler(seedOpsRecords())
 	req := httptest.NewRequest(http.MethodGet, "/api/ops/records/op-1001", nil)
 	rec := httptest.NewRecorder()
@@ -44,7 +44,7 @@ func HandlerGetNoPollution(t *testing.T) {
 	}
 }
 
-func HandlerListNoPollution(t *testing.T) {
+func TestHandlerListNoPollution(t *testing.T) {
 	handler := newOpsTestHandler(seedOpsRecords())
 	req := httptest.NewRequest(http.MethodGet, "/api/ops/records", nil)
 	rec := httptest.NewRecorder()
@@ -66,7 +66,7 @@ func HandlerListNoPollution(t *testing.T) {
 	}
 }
 
-func ReadPathConcurrentSafe(t *testing.T) {
+func TestReadPathConcurrentSafe(t *testing.T) {
 	handler := newOpsTestHandler(seedOpsRecords())
 	start := make(chan struct{})
 	var wg sync.WaitGroup
@@ -96,7 +96,7 @@ func ReadPathConcurrentSafe(t *testing.T) {
 	wg.Wait()
 }
 
-func CreateDuplicate409(t *testing.T) {
+func TestCreateDuplicate409(t *testing.T) {
 	handler := newOpsTestHandler(nil)
 	body := `{"id":"op-dup","subject":"dup","owner":"o","priority":"normal","status":"queued","labels":{"site":"s"}}`
 	req := httptest.NewRequest(http.MethodPost, "/api/ops/records", bytes.NewBufferString(body))

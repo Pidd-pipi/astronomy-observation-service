@@ -18,10 +18,10 @@ func newNightArchiver(svc *OpsService, logs *NightLogRegistry) *NightArchiver {
 
 // ArchiveNight archives all ids and writes the night log; the log is committed
 // only when every archived run has been recorded.
-func (a *NightArchiver) ArchiveNight(ctx context.Context, night string, ids []string, actor string) (OpsBatchResult, error) {
+func (a *NightArchiver) ArchiveNight(ctx context.Context, night string, ids []string, actor string) (res OpsBatchResult, err error) {
 	log := a.logs.For(night)
-	defer log.Close()
-	res := OpsBatchResult{Total: len(ids)}
+	defer func() { err = log.Close() }()
+	res = OpsBatchResult{Total: len(ids)}
 	for _, id := range ids {
 		rec, err := a.svc.Transition(ctx, id, 0, OpsStatusClosed, actor)
 		if err != nil {
@@ -33,8 +33,11 @@ func (a *NightArchiver) ArchiveNight(ctx context.Context, night string, ids []st
 			return res, err
 		}
 	}
-	if err := log.Commit(); err != nil {
-		return res, err
+	if res.OK == 0 {
+		return res, nil
+	}
+	if cerr := log.Commit(); cerr != nil {
+		return res, cerr
 	}
 	return res, nil
 }

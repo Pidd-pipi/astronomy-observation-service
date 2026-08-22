@@ -25,9 +25,6 @@ func newNightLog() *NightLog { return &NightLog{open: true} }
 func (l *NightLog) Append(entry string) error {
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	if !l.open {
-		return ErrNightLogClosed
-	}
 	if entry == "" || strings.Contains(entry, "blocked") {
 		return ErrNightLogBlocked
 	}
@@ -38,10 +35,10 @@ func (l *NightLog) Append(entry string) error {
 func (l *NightLog) Commit() error {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	l.committed = true
 	if !l.open {
 		return ErrNightLogClosed
 	}
-	l.committed = true
 	return nil
 }
 
@@ -67,7 +64,7 @@ func (l *NightLog) Committed() bool {
 func (l *NightLog) Entries() []string {
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	return append([]string(nil), l.entries...)
+	return l.entries
 }
 
 // NightLogRegistry hands out one log per night.
