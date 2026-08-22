@@ -1,0 +1,1 @@
+fetch('/healthz').then(r=>r.json()).then(x=>document.body.insertAdjacentHTML('beforeend','<p>'+x.status+'</p>'));fetch('/api/runs').then(r=>r.json()).then(xs=>document.body.insertAdjacentHTML('beforeend','<ul>'+xs.map(x=>'<li>'+x.target+': '+x.status+'</li>').join('')+'</ul>'));
