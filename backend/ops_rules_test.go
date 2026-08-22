@@ -4,14 +4,14 @@ import (
 	"testing"
 )
 
-func RulesTotalCount112(t *testing.T) {
+func TestRulesTotalCount112(t *testing.T) {
 	rules := opsRules()
 	if len(rules) != 112 {
 		t.Fatalf("rules total = %d, want 112", len(rules))
 	}
 }
 
-func Rules01Has0108(t *testing.T) {
+func TestRules01Has0108(t *testing.T) {
 	found := false
 	for _, rule := range opsRules01() {
 		if rule.Code == "OPS-0108" {
@@ -23,7 +23,7 @@ func Rules01Has0108(t *testing.T) {
 	}
 }
 
-func Rules01CodesUnique(t *testing.T) {
+func TestRules01CodesUnique(t *testing.T) {
 	seen := map[string]bool{}
 	for _, rule := range opsRules01() {
 		if seen[rule.Code] {
@@ -33,7 +33,7 @@ func Rules01CodesUnique(t *testing.T) {
 	}
 }
 
-func Rules02Has0205(t *testing.T) {
+func TestRules02Has0205(t *testing.T) {
 	found := false
 	for _, rule := range opsRules02() {
 		if rule.Code == "OPS-0205" {
@@ -45,7 +45,7 @@ func Rules02Has0205(t *testing.T) {
 	}
 }
 
-func Rules02CodesUnique(t *testing.T) {
+func TestRules02CodesUnique(t *testing.T) {
 	seen := map[string]bool{}
 	for _, rule := range opsRules02() {
 		if seen[rule.Code] {
@@ -55,14 +55,14 @@ func Rules02CodesUnique(t *testing.T) {
 	}
 }
 
-func Rule0303Advisory(t *testing.T) {
+func TestRule0303Advisory(t *testing.T) {
 	rule := opsRule0303()
 	if rule.Terminal {
 		t.Fatalf("rule 0303 must not be terminal")
 	}
 }
 
-func Rule0704RequiresLabels(t *testing.T) {
+func TestRule0704RequiresLabels(t *testing.T) {
 	rule := opsRule0704()
 	want := len(rule.RequiredLabels)
 	if want != 4 {
@@ -74,7 +74,7 @@ func Rule0704RequiresLabels(t *testing.T) {
 	}
 }
 
-func RuleCountsNoPanic(t *testing.T) {
+func TestRuleCountsNoPanic(t *testing.T) {
 	rules := opsRules()
 	counts := opsRuleCounts(rules)
 	if len(counts) == 0 {
@@ -89,7 +89,7 @@ func RuleCountsNoPanic(t *testing.T) {
 	}
 }
 
-func TerminalCountMatches(t *testing.T) {
+func TestTerminalCountMatches(t *testing.T) {
 	rules := opsRules()
 	manual := 0
 	for _, rule := range rules {
@@ -102,7 +102,7 @@ func TerminalCountMatches(t *testing.T) {
 	}
 }
 
-func Rules04Has0405(t *testing.T) {
+func TestRules04Has0405(t *testing.T) {
 	found := false
 	for _, rule := range opsRules04() {
 		if rule.Code == "OPS-0405" {
@@ -114,7 +114,7 @@ func Rules04Has0405(t *testing.T) {
 	}
 }
 
-func Rules04Has0408(t *testing.T) {
+func TestRules04Has0408(t *testing.T) {
 	found := false
 	for _, rule := range opsRules04() {
 		if rule.Code == "OPS-0408" {
@@ -126,7 +126,7 @@ func Rules04Has0408(t *testing.T) {
 	}
 }
 
-func Rules04CodesUnique(t *testing.T) {
+func TestRules04CodesUnique(t *testing.T) {
 	seen := map[string]bool{}
 	for _, rule := range opsRules04() {
 		if seen[rule.Code] {
@@ -136,7 +136,7 @@ func Rules04CodesUnique(t *testing.T) {
 	}
 }
 
-func Rules05Has0507(t *testing.T) {
+func TestRules05Has0507(t *testing.T) {
 	found := false
 	for _, rule := range opsRules05() {
 		if rule.Code == "OPS-0507" {
@@ -148,7 +148,7 @@ func Rules05Has0507(t *testing.T) {
 	}
 }
 
-func Rules05CodesUnique(t *testing.T) {
+func TestRules05CodesUnique(t *testing.T) {
 	seen := map[string]bool{}
 	for _, rule := range opsRules05() {
 		if seen[rule.Code] {
@@ -158,7 +158,7 @@ func Rules05CodesUnique(t *testing.T) {
 	}
 }
 
-func RuleMissingLabelsReported(t *testing.T) {
+func TestRuleMissingLabelsSurfaced(t *testing.T) {
 	rule := opsRule0101()
 	record := OpsRecord{ID: "r", Labels: map[string]string{"site": "s", "operator": "o", "evidence": "e", "reviewed": "y"}}
 	if missing := opsRuleMissingLabels(record, rule); len(missing) != 0 {
@@ -166,7 +166,7 @@ func RuleMissingLabelsReported(t *testing.T) {
 	}
 }
 
-func Rules01Has0103(t *testing.T) {
+func TestRules01Has0103(t *testing.T) {
 	found := false
 	for _, rule := range opsRules01() {
 		if rule.Code == "OPS-0103" {

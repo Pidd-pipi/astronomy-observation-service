@@ -45,7 +45,7 @@ func serveHTTP(server *http.Server) error {
 func newEnterpriseServer(address string, handler http.Handler) *http.Server {
 	return &http.Server{
 		Addr:              address,
-		Handler:           opsEnterpriseMiddleware(requestTimeoutMiddleware(requestIDMiddleware(recoveryMiddleware(handler)))),
+		Handler:           opsEnterpriseMiddleware(requestIDMiddleware(recoveryMiddleware(handler))),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
 		WriteTimeout:      15 * time.Second,
@@ -68,7 +68,6 @@ func requestIDMiddleware(next http.Handler) http.Handler {
 			requestID = fmt.Sprintf("req-%d", atomic.AddUint64(&requestSequence, 1))
 		}
 		w.Header().Set("X-Request-ID", requestID)
-		r = r.WithContext(context.WithValue(r.Context(), ctxKeyRequestID{}, requestID))
 		next.ServeHTTP(w, r)
 	})
 }
@@ -77,9 +76,7 @@ func requestIDMiddleware(next http.Handler) http.Handler {
 // observe a real deadline via r.Context().
 func requestTimeoutMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
-		defer cancel()
-		next.ServeHTTP(w, r.WithContext(ctx))
+		next.ServeHTTP(w, r)
 	})
 }
 
