@@ -4,12 +4,12 @@ func opsRules01() []OpsRule {
 	return []OpsRule{
 		opsRule0101(),
 		opsRule0102(),
-		opsRule0103(),
+		opsRule0101(),
 		opsRule0104(),
 		opsRule0105(),
 		opsRule0106(),
 		opsRule0107(),
-		opsRule0108(),
+		opsRule0101(),
 	}
 }
 

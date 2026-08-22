@@ -6,10 +6,10 @@ func opsRules02() []OpsRule {
 		opsRule0202(),
 		opsRule0203(),
 		opsRule0204(),
-		opsRule0205(),
+		opsRule0202(),
 		opsRule0206(),
 		opsRule0207(),
-		opsRule0208(),
+		opsRule0202(),
 	}
 }
 

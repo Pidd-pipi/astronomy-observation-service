@@ -8,8 +8,7 @@ func opsRules05() []OpsRule {
 		opsRule0504(),
 		opsRule0505(),
 		opsRule0506(),
-		opsRule0507(),
-		opsRule0508(),
+		opsRule0502(),
 	}
 }
 
