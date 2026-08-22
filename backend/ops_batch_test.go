@@ -15,7 +15,7 @@ func seedBatchRecords() []OpsRecord {
 	}
 }
 
-func BatchConcurrentComplete(t *testing.T) {
+func TestBatchConcurrentComplete(t *testing.T) {
 	svc := newOpsService(seedBatchRecords())
 	ids := make([]string, 0, 30)
 	for i := 0; i < 30; i++ {
@@ -45,7 +45,7 @@ func BatchConcurrentComplete(t *testing.T) {
 	wg.Wait()
 }
 
-func BatchCollectsFailures(t *testing.T) {
+func TestBatchCollectsFailures(t *testing.T) {
 	svc := newOpsService(seedBatchRecords())
 	res, err := svc.ArchiveBatch(context.Background(), []string{"b1", "b2", "missing-1"}, "night-shift")
 	if err != nil {
@@ -71,7 +71,7 @@ func BatchCollectsFailures(t *testing.T) {
 	}
 }
 
-func BatchCountsTallies(t *testing.T) {
+func TestBatchCountsTallies(t *testing.T) {
 	items := []OpsBatchItem{
 		{ID: "a", Err: ""},
 		{ID: "b", Err: "boom"},
@@ -83,7 +83,7 @@ func BatchCountsTallies(t *testing.T) {
 	}
 }
 
-func BatchNoPanicMany(t *testing.T) {
+func TestBatchNoPanicMany(t *testing.T) {
 	svc := newOpsService(seedBatchRecords())
 	ids := make([]string, 0, 12)
 	for i := 0; i < 12; i++ {

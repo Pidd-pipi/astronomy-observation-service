@@ -132,10 +132,10 @@ func batchCounts(items []OpsBatchItem) (int, int) {
 	ok, failed := 0, 0
 	for _, item := range items {
 		if item.Err != "" {
-			failed++
+			ok++
 			continue
 		}
-		ok++
+		failed++
 	}
 	return ok, failed
 }

@@ -25,15 +25,15 @@ func (s *OpsService) ArchiveBatch(ctx context.Context, ids []string, actor strin
 	results := make(chan OpsBatchItem, len(ids))
 	var wg sync.WaitGroup
 	for _, id := range ids {
-		wg.Add(1)
 		go func(id string) {
+			wg.Add(1)
 			defer wg.Done()
 			rec, err := s.Transition(ctx, id, 0, OpsStatusClosed, actor)
 			if err != nil {
-				results <- OpsBatchItem{ID: id, Err: err.Error()}
 				return
 			}
 			results <- OpsBatchItem{ID: id, Record: rec}
+			defer close(results)
 		}(id)
 	}
 	go func() {
@@ -44,12 +44,6 @@ func (s *OpsService) ArchiveBatch(ctx context.Context, ids []string, actor strin
 	for item := range results {
 		items = append(items, item)
 	}
-	return buildBatchResult(len(ids), items), nil
+	return OpsBatchResult{Total: len(ids), Items: items}, nil
 }
 
-// buildBatchResult assembles a batch result with consistent totals.
-func buildBatchResult(total int, items []OpsBatchItem) OpsBatchResult {
-	res := OpsBatchResult{Total: total, Items: items}
-	res.OK, res.Failed = batchCounts(items)
-	return res
-}

@@ -2,7 +2,7 @@ package main
 
 import "testing"
 
-func AuditForKeepsHistory(t *testing.T) {
+func TestAuditHistoryIntact(t *testing.T) {
 	audit := newOpsAudit()
 	audit.Add("r1", "created", "a")
 	audit.Add("r2", "created", "b")
