@@ -31,7 +31,10 @@ func (s *OpsStore) Get(ctx context.Context, id string) (OpsRecord, error) {
 	if !ok {
 		return OpsRecord{}, ErrOpsNotFound
 	}
-	return item, nil
+	// Return a deep copy so callers cannot mutate the stored record's
+	// reference-typed fields (e.g. Labels). Sharing the backing map leads to
+	// cross-request label pollution and concurrent-map-write data races.
+	return item.Clone(), nil
 }
 func (s *OpsStore) List(ctx context.Context) ([]OpsRecord, error) {
 	select {
@@ -43,7 +46,7 @@ func (s *OpsStore) List(ctx context.Context) ([]OpsRecord, error) {
 	defer s.mu.RUnlock()
 	out := make([]OpsRecord, 0, len(s.items))
 	for _, item := range s.items {
-		out = append(out, item)
+		out = append(out, item.Clone())
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
 	return out, nil
@@ -56,10 +59,13 @@ func (s *OpsStore) Put(ctx context.Context, item OpsRecord) error {
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	item = normalizeOpsRecord(item)
 	if _, ok := s.items[item.ID]; ok {
 		return ErrOpsConflict
 	}
-	s.items[item.ID] = item
+	// Store a deep copy so the caller's record (and its Labels map) cannot be
+	// mutated through the stored reference.
+	s.items[item.ID] = item.Clone()
 	return nil
 }
 func (s *OpsStore) Update(ctx context.Context, item OpsRecord, expected int) error {
@@ -79,7 +85,9 @@ func (s *OpsStore) Update(ctx context.Context, item OpsRecord, expected int) err
 	}
 	item.Revision = current.Revision + 1
 	item.UpdatedAt = timeNowOps()
-	s.items[item.ID] = item
+	// Store a deep copy so the caller's record (and its Labels map) cannot be
+	// mutated through the stored reference.
+	s.items[item.ID] = item.Clone()
 	return nil
 }
 func (s *OpsStore) Delete(ctx context.Context, id string) error {

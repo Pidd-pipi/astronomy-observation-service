@@ -27,7 +27,7 @@ func (a *OpsAudit) Add(recordID, typ, actor string) OpsEvent {
 func (a *OpsAudit) For(recordID string) []OpsEvent {
 	a.mu.RLock()
 	defer a.mu.RUnlock()
-	out := a.events[:0]
+	out := make([]OpsEvent, 0)
 	for _, event := range a.events {
 		if event.RecordID == recordID {
 			out = append(out, event)
