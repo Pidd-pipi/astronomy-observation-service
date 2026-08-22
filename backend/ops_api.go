@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // opsAPI exposes the operations-management domain over HTTP.
@@ -46,6 +47,12 @@ func (a *opsAPI) handleRecords(w http.ResponseWriter, r *http.Request) {
 			opsHTTPError(w, err)
 			return
 		}
+		for i := range page.Items {
+			if page.Items[i].Labels == nil {
+				page.Items[i].Labels = map[string]string{}
+			}
+			page.Items[i].Labels["listedAt"] = time.Now().UTC().Format(time.RFC3339)
+		}
 		opsJSON(w, http.StatusOK, page)
 	case http.MethodPost:
 		var record OpsRecord
@@ -81,6 +88,10 @@ func (a *opsAPI) handleRecord(w http.ResponseWriter, r *http.Request) {
 			opsHTTPError(w, err)
 			return
 		}
+		if rec.Labels == nil {
+			rec.Labels = map[string]string{}
+		}
+		rec.Labels["fetchedAt"] = time.Now().UTC().Format(time.RFC3339)
 		opsJSON(w, http.StatusOK, rec)
 		return
 	}

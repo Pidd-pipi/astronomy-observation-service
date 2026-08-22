@@ -6,20 +6,20 @@ import (
 	"time"
 )
 
-func StampParseErrorReported(t *testing.T) {
+func TestStampParseErrorSignaled(t *testing.T) {
 	if _, err := opsParseStamp("not-a-time"); err == nil {
 		t.Fatalf("opsParseStamp must report parse error")
 	}
 }
 
-func AgeInvalidStampZero(t *testing.T) {
+func TestAgeInvalidStampZero(t *testing.T) {
 	now := time.Now().UTC()
 	if age := opsAge(now, "not-a-time"); age != 0 {
 		t.Fatalf("opsAge invalid stamp = %v, want 0", age)
 	}
 }
 
-func BackoffCappedAtSix(t *testing.T) {
+func TestBackoffCappedAtSix(t *testing.T) {
 	if d := opsBackoff(10); d > time.Second {
 		t.Fatalf("opsBackoff not capped: %v", d)
 	}
