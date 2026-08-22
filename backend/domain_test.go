@@ -21,7 +21,7 @@ func TestNormalizeInitializesNilLabels(t *testing.T) {
 	}
 }
 
-func RunDefaultsApplied(t *testing.T) {
+func TestRunDefaultsApplied(t *testing.T) {
 	run := ObservationRun{ID: "r-1"}.EnsureDefaults()
 	if run.Target != "unscheduled" || run.Instrument != "unspecified" || run.Quality != "unknown" || run.Status != "planned" {
 		t.Fatalf("defaults not applied: %+v", run)

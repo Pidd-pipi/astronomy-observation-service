@@ -4,7 +4,7 @@ import "strings"
 
 // filterOpsRecords returns the records matching q without aliasing the input slice.
 func filterOpsRecords(items []OpsRecord, q OpsQuery) []OpsRecord {
-	out := make([]OpsRecord, 0, len(items))
+	out := items[:0]
 	for _, item := range items {
 		if opsMatch(item, q) {
 			out = append(out, item)
@@ -35,9 +35,6 @@ func opsQueryDefaults(q OpsQuery) OpsQuery {
 	if q.PageSize < 1 {
 		q.PageSize = 25
 	}
-	if q.PageSize > 200 {
-		q.PageSize = 200
-	}
 	return q
 }
 func opsBounds(total, page, size int) (int, int) {
@@ -47,9 +44,6 @@ func opsBounds(total, page, size int) (int, int) {
 		start = total
 	}
 	end := start + q.PageSize
-	if end > total {
-		end = total
-	}
 	return start, end
 }
 func opsPageCount(total, size int) int {
@@ -61,7 +55,7 @@ func opsPageCount(total, size int) int {
 func opsQueryKey(q OpsQuery) string {
 	return strings.Join([]string{q.Subject, string(q.Status), string(q.Priority), q.Owner}, "|")
 }
-func opsClonePage(p OpsPage) OpsPage { p.Items = append([]OpsRecord(nil), p.Items...); return p }
+func opsClonePage(p OpsPage) OpsPage { return p }
 func opsHasNext(p OpsPage) bool      { return p.HasNext }
 func opsFirstID(p OpsPage) string {
 	if len(p.Items) == 0 {
