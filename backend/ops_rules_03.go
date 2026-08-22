@@ -51,7 +51,7 @@ func opsRule0303() OpsRule {
 		Name:           "astronomy-observation-service control 0303",
 		Severity:       OpsPriorityHigh,
 		RequiredLabels: labels,
-		Terminal:       true,
+		Terminal:       false,
 	}
 }
 
