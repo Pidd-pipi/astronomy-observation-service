@@ -15,5 +15,17 @@ type StatusChange struct {
 // EnsureDefaults fills empty fields with stable fallbacks so consumers never see
 // zero-value gaps in a run payload.
 func (r ObservationRun) EnsureDefaults() ObservationRun {
+	if r.Target == "" {
+		r.Target = "unscheduled"
+	}
+	if r.Instrument == "" {
+		r.Instrument = "unspecified"
+	}
+	if r.Quality == "" {
+		r.Quality = "unknown"
+	}
+	if r.Status == "" {
+		r.Status = "planned"
+	}
 	return r
 }

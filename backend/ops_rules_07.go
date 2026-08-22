@@ -64,7 +64,7 @@ func opsRule0704() OpsRule {
 		Code:           "OPS-0704",
 		Name:           "astronomy-observation-service control 0704",
 		Severity:       OpsPriorityCritical,
-		RequiredLabels: nil,
+		RequiredLabels: labels,
 		Terminal:       true,
 	}
 }
@@ -129,7 +129,7 @@ func opsRule0708() OpsRule {
 func opsRuleMissingLabels(record OpsRecord, rule OpsRule) []string {
 	var missing []string
 	for _, label := range rule.RequiredLabels {
-		if record.LabelValue(label) != "" {
+		if record.LabelValue(label) == "" {
 			missing = append(missing, label)
 		}
 	}
