@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -18,8 +17,8 @@ func healthHandler(service string) http.HandlerFunc {
 			"status":    "ok",
 			"service":   service,
 			"time":      time.Now().UTC().Format(time.RFC3339),
-			"deadline":  strconv.FormatBool(opsDeadline(context.Background())),
-			"requestId": requestIDFrom(context.Background()),
+			"deadline":  strconv.FormatBool(opsDeadline(r.Context())),
+			"requestId": requestIDFrom(r.Context()),
 		})
 	}
 }
