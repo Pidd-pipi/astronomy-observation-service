@@ -20,30 +20,34 @@ type OpsBatchResult struct {
 	Items  []OpsBatchItem `json:"items"`
 }
 
-// ArchiveBatch transitions every id to closed concurrently and reports per-item results.
+// ArchiveBatch transitions every id to closed concurrently and reports per-item
+// results. A missing or invalid id produces an item carrying its error instead of
+// blocking the rest of the batch; the channel is closed exactly once after every
+// worker finishes so callers never hang or panic on a partial run.
 func (s *OpsService) ArchiveBatch(ctx context.Context, ids []string, actor string) (OpsBatchResult, error) {
 	results := make(chan OpsBatchItem, len(ids))
 	var wg sync.WaitGroup
+	wg.Add(len(ids))
 	for _, id := range ids {
 		go func(id string) {
-			wg.Add(1)
 			defer wg.Done()
 			rec, err := s.Transition(ctx, id, 0, OpsStatusClosed, actor)
 			if err != nil {
+				results <- OpsBatchItem{ID: id, Err: err.Error()}
 				return
 			}
 			results <- OpsBatchItem{ID: id, Record: rec}
-			defer close(results)
 		}(id)
 	}
 	go func() {
 		wg.Wait()
 		close(results)
 	}()
-	var items []OpsBatchItem
+	items := make([]OpsBatchItem, 0, len(ids))
 	for item := range results {
 		items = append(items, item)
 	}
-	return OpsBatchResult{Total: len(ids), Items: items}, nil
+	ok, failed := batchCounts(items)
+	return OpsBatchResult{Total: len(ids), OK: ok, Failed: failed, Items: items}, nil
 }
 
