@@ -23,6 +23,9 @@ func newAlertSink() *AlertSink { return &AlertSink{open: true} }
 func (s *AlertSink) WriteLine(line string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	if !s.open {
+		return ErrAlertSinkClosed
+	}
 	if line == "" {
 		return ErrAlertSinkBlocked
 	}
@@ -33,6 +36,9 @@ func (s *AlertSink) WriteLine(line string) error {
 func (s *AlertSink) Commit() error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	if !s.open {
+		return ErrAlertSinkClosed
+	}
 	s.committed = true
 	return nil
 }
@@ -59,5 +65,7 @@ func (s *AlertSink) Committed() bool {
 func (s *AlertSink) Lines() []string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return s.lines
+	out := make([]string, len(s.lines))
+	copy(out, s.lines)
+	return out
 }
