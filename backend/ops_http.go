@@ -66,6 +66,8 @@ func opsHTTPError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, ErrOpsNotFound):
 		opsJSON(w, http.StatusNotFound, map[string]string{"error": err.Error()})
+	case errors.Is(err, ErrOpsConflict):
+		opsJSON(w, http.StatusConflict, map[string]string{"error": err.Error()})
 	case errors.Is(err, ErrOpsTransition):
 		opsJSON(w, http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
 	case errors.Is(err, ErrOpsInvalid), errors.Is(err, ErrOpsPolicy):
