@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func FilterRecordsNoAlias(t *testing.T) {
+func TestFilterRecordsNoAlias(t *testing.T) {
 	items := []OpsRecord{
 		{ID: "a", Subject: "alpha", Owner: "o", Status: OpsStatusActive, Priority: OpsPriorityNormal, Labels: map[string]string{"site": "s1"}},
 		{ID: "b", Subject: "beta", Owner: "o", Status: OpsStatusQueued, Priority: OpsPriorityNormal, Labels: map[string]string{"site": "s2"}},
@@ -23,7 +23,7 @@ func FilterRecordsNoAlias(t *testing.T) {
 	}
 }
 
-func ClonePageBackingIsolated(t *testing.T) {
+func TestClonePageBackingIsolated(t *testing.T) {
 	original := OpsPage{Items: make([]OpsRecord, 1, 4)}
 	original.Items[0] = OpsRecord{ID: "a", Labels: map[string]string{"site": "s1"}}
 	cloned := opsClonePage(original)
@@ -36,14 +36,14 @@ func ClonePageBackingIsolated(t *testing.T) {
 	}
 }
 
-func QueryDefaultsCapsSize(t *testing.T) {
+func TestQueryDefaultsCapsSize(t *testing.T) {
 	q := opsQueryDefaults(OpsQuery{PageSize: 999})
 	if q.PageSize != 200 {
 		t.Fatalf("page size = %d, want 200", q.PageSize)
 	}
 }
 
-func BoundsClamped(t *testing.T) {
+func TestBoundsClamped(t *testing.T) {
 	start, end := opsBounds(5, 3, 25)
 	if start != 5 || end != 5 {
 		t.Fatalf("bounds = (%d,%d), want (5,5)", start, end)

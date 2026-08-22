@@ -6,21 +6,21 @@ import (
 	"testing"
 )
 
-func ErrChainPreserved(t *testing.T) {
+func TestErrChainPreserved(t *testing.T) {
 	err := wrapOps("conflict", "store.update", ErrOpsConflict)
 	if !errors.Is(err, ErrOpsConflict) {
 		t.Fatalf("wrapped conflict error chain broken: %v", err)
 	}
 }
 
-func ErrCodeKeepsTypedCode(t *testing.T) {
+func TestErrCodeKeepsTypedCode(t *testing.T) {
 	err := wrapOps("create", "store.put", ErrOpsConflict)
 	if code := opsCode(err); code != "create" {
 		t.Fatalf("opsCode = %q, want create", code)
 	}
 }
 
-func ErrMessageKeepsCause(t *testing.T) {
+func TestErrMessageKeepsCause(t *testing.T) {
 	err := wrapOps("conflict", "store.update", ErrOpsConflict)
 	text := err.Error()
 	if !strings.Contains(text, "operations revision conflict") {
@@ -28,7 +28,7 @@ func ErrMessageKeepsCause(t *testing.T) {
 	}
 }
 
-func ErrHTTPMapsConflict409(t *testing.T) {
+func TestErrHTTPMapsConflict409(t *testing.T) {
 	rr := newTestRecorder()
 	opsHTTPError(rr, wrapOps("conflict", "store.update", ErrOpsConflict))
 	if rr.Code != 409 {
@@ -36,7 +36,7 @@ func ErrHTTPMapsConflict409(t *testing.T) {
 	}
 }
 
-func ErrConflictClassified(t *testing.T) {
+func TestErrConflictClassified(t *testing.T) {
 	if !opsIsConflict(wrapOps("conflict", "store.update", ErrOpsConflict)) {
 		t.Fatalf("wrapped conflict must classify as conflict")
 	}

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func SearchTotalFiltered(t *testing.T) {
+func TestSearchTotalFiltered(t *testing.T) {
 	svc := newOpsService(seedOpsRecords())
 	page, err := svc.Search(context.Background(), OpsQuery{Status: OpsStatusActive})
 	if err != nil {
@@ -19,7 +19,7 @@ func SearchTotalFiltered(t *testing.T) {
 	}
 }
 
-func SearchPriorityOnly(t *testing.T) {
+func TestSearchPriorityOnly(t *testing.T) {
 	svc := newOpsService(seedOpsRecords())
 	page, err := svc.Search(context.Background(), OpsQuery{Priority: OpsPriorityCritical})
 	if err != nil {
